@@ -6,16 +6,12 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 
 
 const Post = ({ onClose }) => {
+    const port = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
     const modalRef = useRef();
     const inputRef = useRef(null);
-    const port = import.meta.env.VITE_API_BASE_URL;
-
-
     const [image, setimage] = useState('')
     const [mediaType, setMediaType] = useState('');
     const [loading, setLoading] = useState(false);
-
-
     useEffect(() => {
         const handleOutsideClick = (e) => {
             if (modalRef.current && !modalRef.current.contains(e.target)) {

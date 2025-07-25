@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import HomeSIdeBar from '../../components/HomeSIdeBar'
 import Reel from '../../components/Reel';
 const Home2 = () => {
-  const port = import.meta.env.VITE_API_BASE_URL;
+  const port = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
   const [data, setData] = useState([])
   const [isMobile, setIsMobile] = useState(false);
   const imagePosts = data.filter(item => item.mediaType === "video");

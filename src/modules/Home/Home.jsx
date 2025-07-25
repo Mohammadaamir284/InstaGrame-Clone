@@ -9,7 +9,7 @@ import { HeartIcon, EllipsisHorizontalIcon, ChatBubbleOvalLeftIcon, BookmarkIcon
 const Home = () => {
   const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate()
-  const port = import.meta.env.VITE_API_BASE_URL;
+  const port = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
   const [data, setData] = useState([])
   useEffect(() => {
     const getPost = async () => {
