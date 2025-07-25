@@ -22,7 +22,7 @@ export default function Gallery({ setImageClicked, owner }) {
 
     /* ──────────────  fetch posts once  ────────────── */
     const token = localStorage.getItem("user:token");
-    const port = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+    const port = import.meta.env.VITE_API_BASE_URL
     useEffect(() => {
         const getPost = async () => {
             const res = await fetch(`${port}/api/post/${owner}`, {

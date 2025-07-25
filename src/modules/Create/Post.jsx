@@ -6,7 +6,7 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 
 
 const Post = ({ onClose }) => {
-    const port = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+    const port = import.meta.env.VITE_API_BASE_URL
     const modalRef = useRef();
     const inputRef = useRef(null);
     const [image, setimage] = useState('')

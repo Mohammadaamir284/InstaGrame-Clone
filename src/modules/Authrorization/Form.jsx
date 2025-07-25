@@ -14,7 +14,7 @@ const Form = ({ islogin = false }) => {
     password: ''
   })
 
-  const port = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+  const port = import.meta.env.VITE_API_BASE_URL
 
   const handelLogPost = async (e) => {
     e.preventDefault()

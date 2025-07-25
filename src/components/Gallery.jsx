@@ -8,7 +8,7 @@ export default function Gallery({ setImageClicked, owner }) {
     const [userDetail, setuserDetail] = useState({})
     const [isMobile, setIsMobile] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(null);
-    const port = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+    const port = import.meta.env.VITE_API_BASE_URL
     const imagePosts = PostImage.filter(item => item.mediaType === "image");
     const handleImageClick = (index) => {
         setCurrentIndex(index);
