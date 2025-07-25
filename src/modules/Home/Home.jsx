@@ -1,24 +1,20 @@
 import React, { useEffect, useState, lazy, Suspense } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-
-
-
 const HomeSIdeBar = lazy(() => import('../../components/HomeSIdeBar'));
 const SingleActiveVideo = lazy(() => import('../../components/SingleActiveVideo'));
 import { HeartIcon, EllipsisHorizontalIcon, ChatBubbleOvalLeftIcon, BookmarkIcon } from '@heroicons/react/24/outline';
 
 
 const Home = () => {
+  const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate()
   const port = import.meta.env.VITE_API_BASE_URL;
-
   const [data, setData] = useState([])
-  const [isLiked, setisLiked] = useState(false)
-
-  const token = localStorage.getItem('user:token')
   useEffect(() => {
     const getPost = async () => {
+      console.log('allposts');
+      const token = localStorage.getItem('user:token')
       const response = await fetch(`${port}/api/allpost`, {
         method: 'GET',
         headers: {
@@ -37,6 +33,7 @@ const Home = () => {
 
   const handleLikes = async (_id) => {
     try {
+      const token = localStorage.getItem('user:token')
       const response = await fetch(`${port}/api/likes`, {
         method: 'PUT',
         headers: {
@@ -64,6 +61,7 @@ const Home = () => {
   }
   const handleUnLikes = async (_id) => {
     try {
+      const token = localStorage.getItem('user:token')
       const response = await fetch(`${port}/api/unlikes`, {
         method: 'DELETE',
         headers: {
@@ -88,11 +86,22 @@ const Home = () => {
       console.log(error)
     }
   }
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkIsMobile(); // initial check
+    window.addEventListener('resize', checkIsMobile); // update on resize
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
+
   return (<>
-    <div className='flex items-center justify-center bg-black text-white w-screen h-screen'>
-      <HomeSIdeBar />
-      <div className='border-l border-white w-[80%] h-screen flex'>
-        <div className='w-[60%] h-full p-4 overflow-y-scroll scrollbar-hide'>
+    <div className={`${isMobile ? '' : 'flex items-center justify-center w-screen h-screen'} bg-black text-white `}>
+     
+        <HomeSIdeBar />
+
+      <div className={`  flex ${isMobile ? 'w-full mt-[5vh] h-[93vh]' : 'border-l border-white w-[80%] h-screen'}`}>
+        <div className={`${isMobile ? 'w-full ' : 'w-[60%]'} p-4 overflow-y-scroll scrollbar-hide`}>
           <div className='flex flex-col items-center p-4'>
             {data?.posts?.map((item, index) => {
               const Loginuser = data?.user?._id
@@ -116,7 +125,6 @@ const Home = () => {
                       />
                       :
                       <Suspense fallback={<div className="text-white text-center p-10">Loading form...</div>}>
-
                         <SingleActiveVideo
                           src={item?.image}
                         />
@@ -162,42 +170,43 @@ const Home = () => {
               )
             })}
           </div>
-
         </div>
-        <div className=' h-screen w-[35%] p-4'>
-          <div className='flex items-center justify-between py-7'>
-            <div className='flex items-center gap-5'>
-              <img className='w-10 h-10 rounded-full object-cover' src="/amir.png" alt="" />
-              <div className='flex flex-col'>
-                <span className='text-[14px]'>moha_mmad_aamir</span>
-                <span className='text-[14px] text-neutral-500 font-semibold'>Mohammad Aamir</span>
-              </div>
-            </div>
-            <div className='text-[#007ccd] cursor-pointer'>Switch</div>
-          </div>
-
-          <div>
+        {!isMobile && (
+          <div className=' h-screen w-[35%] p-4'>
             <div className='flex items-center justify-between py-7'>
-              <span className=' text-neutral-500 font-semibold'>Suggested for You</span>
-              <span className='text-[#007ccd] cursor-pointer'>See all</span>
+              <div className='flex items-center gap-5'>
+                <img className='w-10 h-10 rounded-full object-cover' src="/amir.png" alt="" />
+                <div className='flex flex-col'>
+                  <span className='text-[14px]'>moha_mmad_aamir</span>
+                  <span className='text-[14px] text-neutral-500 font-semibold'>Mohammad Aamir</span>
+                </div>
+              </div>
+              <div className='text-[#007ccd] cursor-pointer'>Switch</div>
             </div>
 
-            <main className='flex flex-col gap-4 '>
-              <div className='flex items-center justify-between '>
-                <div className='flex items-center gap-5'>
-                  <img className='w-10 h-10 rounded-full object-cover' src="/amir.png" alt="" />
-                  <div className='flex flex-col'>
-                    <span className='text-[14px]'>moha_mmad_aamir</span>
-                    <span className='text-[14px] text-neutral-500 font-semibold'>Mohammad Aamir</span>
-                  </div>
-                </div>
-                <div className='text-[#007ccd] cursor-pointer'>Follow</div>
+            <div>
+              <div className='flex items-center justify-between py-7'>
+                <span className=' text-neutral-500 font-semibold'>Suggested for You</span>
+                <span className='text-[#007ccd] cursor-pointer'>See all</span>
               </div>
 
+              <main className='flex flex-col gap-4 '>
+                <div className='flex items-center justify-between '>
+                  <div className='flex items-center gap-5'>
+                    <img className='w-10 h-10 rounded-full object-cover' src="/amir.png" alt="" />
+                    <div className='flex flex-col'>
+                      <span className='text-[14px]'>moha_mmad_aamir</span>
+                      <span className='text-[14px] text-neutral-500 font-semibold'>Mohammad Aamir</span>
+                    </div>
+                  </div>
+                  <div className='text-[#007ccd] cursor-pointer'>Follow</div>
+                </div>
 
-            </main>
+
+              </main>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div >
   </>)

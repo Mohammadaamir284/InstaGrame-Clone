@@ -1,5 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import HomeSIdeBar from '../../components/HomeSIdeBar'
 
 
@@ -18,22 +18,27 @@ const Profile = () => {
   const [PostImage, setPostImage] = useState([])
   const [imageClicked, setImageClicked] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
 
-
-  console.log(isUser, 'isUser');
-  console.log(userData, 'userData');
-
+  const location = useLocation();
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tab = params.get('tab');
+    if (tab === 'saved') {
+      setVisible('C');
+    }
+  }, [location]);
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("userdata"));
     setIsUser(storedUser?.username === username);
+    console.log('username');
   }, [username]); // ✅ correct
 
-
-
-  const token = localStorage.getItem('user:token')
   useEffect(() => {
     const getPost = async () => {
+      const token = localStorage.getItem('user:token')
+      console.log('posts');
       const response = await fetch(`${port}/api/post/${username}`, {
         method: 'GET',
         headers: {
@@ -49,11 +54,12 @@ const Profile = () => {
       setPostImage(data.posts);
       setIsFollow(data?.isFollow)
     };
-    if (token) getPost();
-  }, [token, port, username]);
+    getPost();
+  }, [port, username]);
 
   const handleFollow = async () => {
     try {
+      const token = localStorage.getItem('user:token')
       const response = await fetch(`${port}/api/follow`, {
         method: 'POST',
         headers: {
@@ -72,6 +78,7 @@ const Profile = () => {
   const handleUnfollow = async () => {
     console.log('error')
     try {
+      const token = localStorage.getItem('user:token')
       const response = await fetch(`${port}/api/unfollow`, {
         method: 'DELETE',
         headers: {
@@ -91,6 +98,8 @@ const Profile = () => {
   useEffect(() => {
     const followcount = async () => {
       if (!userData?.user) return;
+      console.log('followcount');
+      const token = localStorage.getItem('user:token')
       const followDetail = await fetch(`${port}/api/following/${userData.user}`, {
         method: 'GET',
         headers: {
@@ -101,10 +110,17 @@ const Profile = () => {
       const followreq = await followDetail.json();
       setFollowCount(followreq);
     };
-
     followcount();
   }, [userData]); // ✅ Safe now
-
+  
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkIsMobile(); // initial check
+    window.addEventListener('resize', checkIsMobile); // update on resize
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
 
 
 
@@ -112,10 +128,11 @@ const Profile = () => {
     <div className="flex items-center justify-center bg-black text-white w-screen h-screen relative">
       <div className={`flex items-center justify-center w-full h-full ${visible1 ? 'blur-xs pointer-events-none select-none' : ''}`}>
         <HomeSIdeBar />
-        <div className=' w-[80%] h-screen overflow-y-scroll scrollbar-hide pl-7 py-7 '>
-          <div className='flex justify-center items-center gap-20 w-full'>
-            <div><img className='rounded-full w-35 h-35 object-cover bg-white' src={userData?.pic} alt="" /></div>
-            <div className='flex flex-col space-y-6'>
+        <div className={` ${isMobile ? 'w-full h-[90vh]':'w-[80%] pl-7 py-7 h-screen'}   overflow-y-scroll scrollbar-hide  `}>
+          <div className='flex justify-center items-center md:gap-20 gap-5 w-full py-5'>
+
+            <div><img className={`rounded-full ${isMobile ? 'w-20 h-20':'w-35 h-35'}  object-cover bg-white`} src={userData?.pic} alt="" /></div>
+            <div className='flex flex-col md:space-y-6 space-y-2'>
               <div className='flex items-center gap-3'>
                 <div className='text-[24px] font-semibold'>{username}</div>
                 {!isUser &&
@@ -141,7 +158,7 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          <main className='border-t border-neutral-700 mt-10 flex flex-col items-center'>
+          <main className='border-t border-neutral-700 md:mt-10 flex flex-col items-center'>
             <section className='flex justify-center gap-25  mb-2  font-light'>
               <p className={`cursor-pointer pt-2 ${visible === 'A' ? 'text-white border-t-2' : 'opacity-60'} `} onClick={() => setVisible('A')}>Posts</p>
               <p className={`cursor-pointer pt-2 ${visible === 'B' ? 'text-white border-t-2' : 'opacity-60'} `} onClick={() => setVisible('B')}>Reels</p>
@@ -194,6 +211,7 @@ const Profile = () => {
               {/* ✅ Move data selection outside JSX */}
               {(() => {
                 const data = visible1 === 'A' ? FollowCount.userfollowed : FollowCount.adminfollow;
+                console.log('const data = visible1 ===  FollowCount.userfollowed : FollowCount.adminfollo');
                 return (
                   <main className="flex flex-col gap-4 p-3 h-[53vh] overflow-y-scroll scrollbar-hide">
                     {data?.length === 0 ? (

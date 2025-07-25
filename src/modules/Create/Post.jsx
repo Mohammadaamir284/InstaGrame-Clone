@@ -113,7 +113,7 @@ const Post = ({ onClose }) => {
     return (<>
 
         <div className="fixed inset-0 z-50 flex items-center justify-center   backdrop-blur-xs">
-            <div ref={modalRef} className="relative z-10 bg-[#262626] rounded-xl shadow-lg  text-black w-[40vw] h-[80vh]">
+            <div ref={modalRef} className="relative z-10 bg-[#262626] rounded-xl shadow-lg  text-black md:w-[40vw] w-[80vw] md:h-[80vh] h-[40vh]">
                 <div className='flex flex-col  text-white'>
                     <div className={`flex items-center border-b w-full px-2 rounded-t-xl border-neutral-600 ${image ? 'justify-between bg-black' : 'justify-center'}`}>
                         {!image && <div className='font-semibold  text-center p-2 '>Create</div>}
@@ -124,7 +124,7 @@ const Post = ({ onClose }) => {
                         </>)}
                     </div>
 
-                    <main className='flex justify-center items-center h-[40vw] w-full'>
+                    <main className='flex justify-center items-center  md:h-[40vw] h-[35vh] w-full'>
 
                         {!image && !loading && (<>
                             <Button
@@ -147,12 +147,11 @@ const Post = ({ onClose }) => {
 
                             </div>
                         )}
-
                         {!loading && image && (
                             mediaType === 'image' ? (
-                                <img src={image} className='h-[40vw] w-full object-cover rounded-b-xl' alt="" />
+                                <img src={image} className='md:h-[40vw] h-[35vh] w-full object-cover rounded-b-xl' alt="" />
                             ) : (
-                                <video src={image} className='h-[40vw] w-full object-cover rounded-b-xl' />
+                                <video src={image} className='md:h-[40vw] h-[35vh] w-full object-cover rounded-b-xl' />
                             )
                         )}
 

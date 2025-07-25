@@ -1,14 +1,15 @@
-import React, { useRef, useEffect, lazy, Suspense  } from "react";
+import React, { useRef, useEffect, lazy, Suspense, useState } from "react";
 
 
 const ReelsLike = lazy(() => import('./ReelsLike'));
 
 const Reel = ({ src, user, isMuted, onToggleMute }) => {
+  const [isMobile, setIsMobile] = useState(false);
   const videoRef = useRef(null);
   const containerRef = useRef(null);
   // Auto play/pause when in view
- 
-  
+
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -30,37 +31,53 @@ const Reel = ({ src, user, isMuted, onToggleMute }) => {
       videoRef.current.muted = isMuted;
     }
   }, [isMuted]);
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkIsMobile(); // initial check
+    window.addEventListener('resize', checkIsMobile); // update on resize
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
+
   return (<>
     <div className="flex items-end">
       <div
         ref={containerRef}
-        className="relative h-screen w-full snap-start flex items-center justify-center">
+        className="relative h-screen w-full snap-start flex items-center justify-center"
+      >
         <video
           ref={videoRef}
           src={src}
-          className="h-[95vh] my-[2.5vh] w-full object-cover rounded-xl"
+          className="md:h-[95vh] h-full my-[2.5vh] w-full object-cover md:rounded-xl"
           loop
           playsInline
-        // No click here, autoplay handled above
         />
-        {/* Mute Toggle Button */}
+
+        {/* Mute Button */}
         <button
           onClick={onToggleMute}
-          className="absolute top-10 right-1 text-white bg-black bg-opacity-50 px-2 py-2 rounded-full text-sm">
+          className="absolute top-10 right-1 text-white bg-black bg-opacity-50 px-2 py-2 rounded-full text-sm"
+        >
           {isMuted ? "🔇" : "🔊"}
         </button>
+
+        {/* User Info */}
         <div className="absolute bottom-30 left-6 text-white">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-full bg-gray-400"><img className='object-cover w-8 h-8 rounded-full' src={user?.pic} alt="" /></div> {/* Profile Pic Placeholder */}
-            <span className="text-md font-semibold">{user?.username}</span>
+            <img className="w-8 h-8 rounded-full object-cover" src={user?.pic} alt="" />
+            <span className="font-semibold">{user?.username}</span>
             <span className="text-md border px-3 py-1 rounded-md cursor-pointer">Follow</span>
           </div>
         </div>
+
+        {/* ✅ ReelsLike Component with proper position */}
+        <div className="absolute right-4 bottom-20 z-10">
+          <ReelsLike />
+        </div>
       </div>
-    
-        <ReelsLike />
-   
     </div>
+
   </>);
 };
 export default Reel;

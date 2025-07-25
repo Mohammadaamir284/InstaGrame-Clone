@@ -4,6 +4,7 @@ import Reel from '../../components/Reel';
 const Home2 = () => {
   const port = import.meta.env.VITE_API_BASE_URL;
   const [data, setData] = useState([])
+  const [isMobile, setIsMobile] = useState(false);
   const imagePosts = data.filter(item => item.mediaType === "video");
   const token = localStorage.getItem('user:token')
   useEffect(() => {
@@ -30,12 +31,20 @@ const Home2 = () => {
   const toggleMute = () => {
     setIsMuted((prev) => !prev);
   };
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    checkIsMobile(); // initial check
+    window.addEventListener('resize', checkIsMobile); // update on resize
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
 
 
   return (
     <div className='flex items-center justify-center bg-black text-white w-screen h-screen'>
       <HomeSIdeBar />
-      <div className='border-l border-white w-[80%] h-screen flex  justify-center overflow-y-scroll scrollbar-hide snap-y snap-mandatory '>
+      <div className={` ${isMobile ? '':'border-l border-white w-[80%]'} h-screen flex  justify-center overflow-y-scroll scrollbar-hide snap-y snap-mandatory`}>
 
         <div className="h-screen  flex flex-col items-center gap-y-13">
           {imagePosts.map((item, index) => (

@@ -11,6 +11,7 @@ import {
 
 export default function Gallery({ setImageClicked, owner }) {
     const [posts, setPosts] = useState([]);
+     const [isMobile, setIsMobile] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(null);
 
     /* ──────────────  GLOBAL video state  ────────────── */
@@ -69,26 +70,34 @@ export default function Gallery({ setImageClicked, owner }) {
         });
     }, [isMuted, isPlaying, posts]);
 
+    useEffect(() => {
+        const checkIsMobile = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+        checkIsMobile(); // initial check
+        window.addEventListener('resize', checkIsMobile); // update on resize
+        return () => window.removeEventListener('resize', checkIsMobile);
+    }, []);
+
     /* ──────────────  RENDER  ────────────── */
     return (
         <main className="relative flex flex-col items-center mt-5">
             {/* ───── Grid view ───── */}
             {currentIndex === null && (
-                <div className="w-[70vw] flex flex-wrap gap-1">
+                <div className={`${isMobile ? '':'w-[70vw]'}  flex flex-wrap gap-1`}>
                     {posts.map((post, idx) => (
                         <video
                             key={post._id}
                             src={post.image}
                             muted
                             onClick={() => openViewer(idx)}
-                            className="w-[296px] h-[350px] object-cover cursor-pointer"
+                            className={`${isMobile ? 'w-[126px]':'w-[296px] h-[350px]'}  object-cover cursor-pointer`}
                         />
                     ))}
                 </div>
             )}
-
             {/* ───── Single viewer ───── */}
-            {currentIndex !== null && (
+            {!isMobile && currentIndex !== null && (
                 <>
                     {/* backdrop */}
                     <div

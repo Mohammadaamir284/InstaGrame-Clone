@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-
+import { ClipLoader } from 'react-spinners';
 // Lazy imports
 const Home = lazy(() => import('../modules/Home/Home'));
 const Home1 = lazy(() => import('../modules/Home/Home1'));
@@ -39,7 +39,13 @@ const Routess = () => {
   ];
 
   return (
-    <Suspense fallback={<div className="p-5 text-center">Loading...</div>}>
+    <Suspense fallback={<div className="flex flex-col justify-center items-center space-y-2 bg-black h-[100vh]">
+      <div className="w-[70px]"><img className="text-white" src="/instagram.svg" alt="InstaGram Logo" /></div>
+      <div className='flex justify-center items-center'>
+        <ClipLoader color="#3B82F6" size={50} />
+        <p className="ml-2 text-white">loading...</p>
+      </div>
+    </div>}>
       <Routes>
         {link.map(({ id, path, component }) => (
           <Route key={id} path={path} element={<PrivateRoute>{component}</PrivateRoute>} />
