@@ -38,7 +38,7 @@ const Profile = () => {
     const getPost = async () => {
       const token = localStorage.getItem('user:token')
       console.log('posts');
-      const response = await fetch(`${port}api/post/${username}`, {
+      const response = await fetch(`${port}/api/post/${username}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',   // ✅ सही
@@ -59,7 +59,7 @@ const Profile = () => {
   const handleFollow = async () => {
     try {
       const token = localStorage.getItem('user:token')
-      const response = await fetch(`${port}api/follow`, {
+      const response = await fetch(`${port}/api/follow`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ const Profile = () => {
     console.log('error')
     try {
       const token = localStorage.getItem('user:token')
-      const response = await fetch(`${port}api/unfollow`, {
+      const response = await fetch(`${port}/api/unfollow`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ const Profile = () => {
       if (!userData?.user) return;
       console.log('followcount');
       const token = localStorage.getItem('user:token')
-      const followDetail = await fetch(`${port}api/following/${userData.user}`, {
+      const followDetail = await fetch(`${port}/api/following/${userData.user}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

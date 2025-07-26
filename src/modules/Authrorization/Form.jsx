@@ -20,7 +20,7 @@ const Form = ({ islogin = false }) => {
     e.preventDefault()
 
 
-    const res = await fetch(`${port}api/${islogin ? 'login' : 'register'}`, {
+    const res = await fetch(`${port}/api/${islogin ? 'login' : 'register'}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(logPost)

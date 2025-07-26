@@ -86,7 +86,7 @@ const Post = ({ onClose }) => {
  
     const saveimage = async () => {
         try {
-            const res = await fetch(`${port}api/post`, {
+            const res = await fetch(`${port}/api/post`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

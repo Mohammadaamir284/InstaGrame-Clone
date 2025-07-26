@@ -15,7 +15,7 @@ const Home = () => {
     const getPost = async () => {
       console.log('allposts');
       const token = localStorage.getItem('user:token')
-      const response = await fetch(`${port}api/allpost`, {
+      const response = await fetch(`${port}/api/allpost`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',   // ✅ सही
@@ -34,7 +34,7 @@ const Home = () => {
   const handleLikes = async (_id) => {
     try {
       const token = localStorage.getItem('user:token')
-      const response = await fetch(`${port}api/likes`, {
+      const response = await fetch(`${port}/api/likes`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -62,7 +62,7 @@ const Home = () => {
   const handleUnLikes = async (_id) => {
     try {
       const token = localStorage.getItem('user:token')
-      const response = await fetch(`${port}api/unlikes`, {
+      const response = await fetch(`${port}/api/unlikes`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

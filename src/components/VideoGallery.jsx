@@ -25,7 +25,7 @@ export default function Gallery({ setImageClicked, owner }) {
     const port = import.meta.env.VITE_API_BASE_URL
     useEffect(() => {
         const getPost = async () => {
-            const res = await fetch(`${port}api/post/${owner}`, {
+            const res = await fetch(`${port}/api/post/${owner}`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             const data = await res.json();

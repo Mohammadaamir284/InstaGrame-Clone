@@ -34,7 +34,7 @@ export default function Gallery({ setImageClicked, owner }) {
     useEffect(() => {
         const getPost = async () => {
             const token = localStorage.getItem('user:token')
-            const response = await fetch(`${port}api/post/${owner}`, {
+            const response = await fetch(`${port}/api/post/${owner}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',   // ✅ सही
@@ -63,7 +63,7 @@ export default function Gallery({ setImageClicked, owner }) {
     const handleLikes = async (_id) => {
         try {
             const token = localStorage.getItem('user:token')
-            const response = await fetch(`${port}api/likes`, {
+            const response = await fetch(`${port}/api/likes`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ export default function Gallery({ setImageClicked, owner }) {
     const handleUnLikes = async (_id) => {
         try {
             const token = localStorage.getItem('user:token')
-            const response = await fetch(`${port}api/unlikes`, {
+            const response = await fetch(`${port}/api/unlikes`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
