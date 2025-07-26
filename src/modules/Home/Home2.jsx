@@ -9,7 +9,7 @@ const Home2 = () => {
   const token = localStorage.getItem('user:token')
   useEffect(() => {
     const getPost = async () => {
-      const response = await fetch(`${port}/api/allpost`, {
+      const response = await fetch(`${port}api/allpost`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',   // ✅ सही
