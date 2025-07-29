@@ -7,6 +7,7 @@ const Gallery = lazy(() => import('../../components/Gallery'));
 const VideoGallery = lazy(() => import('../../components/VideoGallery'));
 
 const Profile = () => {
+  const { username } = useParams();
   const port = import.meta.env.VITE_API_BASE_URL 
   const navigate = useNavigate()
   const [visible, setVisible] = useState('A');

@@ -10,11 +10,12 @@ const HomeSIdeBar = () => {
     const [isMobile, setIsMobile] = useState(false);
     const popupRef = useRef(null);
     const navigate = useNavigate();
-    const currentUser = JSON.parse(localStorage.getItem('userdata'))
     const location = useLocation();
     const hideTopNavOnRoutes = ["/reels"]; // ya ["home2 route"]
     const shouldHideTopNav = hideTopNavOnRoutes.includes(location.pathname);
-    // ✅ Close on outside click
+    const currentUser = JSON.parse(localStorage.getItem('userdata'))
+    console.log(currentUser.username, 'currentUser');
+    
     useEffect(() => {
         const handleClickOutside = (event) => {
             // Check if click is outside the popup
