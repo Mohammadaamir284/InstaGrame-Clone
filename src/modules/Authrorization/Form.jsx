@@ -5,6 +5,7 @@ const Input = lazy(() => import('../../components/Input'));
 const Button = lazy(() => import('../../components/Button'));
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import toast from 'react-hot-toast';
 
 const Form = ({ islogin = false }) => {
   const [isMobile, setIsMobile] = useState(false);
@@ -18,8 +19,6 @@ const Form = ({ islogin = false }) => {
 
   const handelLogPost = async (e) => {
     e.preventDefault()
-
-
     const res = await fetch(`${port}/api/${islogin ? 'login' : 'register'}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -31,8 +30,9 @@ const Form = ({ islogin = false }) => {
       localStorage.setItem('user:token', req.token)
       localStorage.setItem('userdata', JSON.stringify(req.user))
       navigate('/')
+      toast.success(req.message);
     } else (
-      console.log('alert', req.message)
+       toast.error(req.message)
     )
   }
 

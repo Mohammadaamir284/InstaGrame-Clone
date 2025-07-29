@@ -15,7 +15,7 @@ const HomeSIdeBar = () => {
     const shouldHideTopNav = hideTopNavOnRoutes.includes(location.pathname);
     const currentUser = JSON.parse(localStorage.getItem('userdata'))
     console.log(currentUser.username, 'currentUser');
-    
+
     useEffect(() => {
         const handleClickOutside = (event) => {
             // Check if click is outside the popup
@@ -33,6 +33,17 @@ const HomeSIdeBar = () => {
     const handlesave = () => {
         navigate(`/profile/${currentUser.username}?tab=saved`);
     };
+
+    const token = localStorage.getItem('user:token');
+    if (token) {
+        const decoded = JSON.parse(atob(token.split('.')[1]));
+        const currentTime = Date.now() / 1000;
+        if (decoded.exp < currentTime) {
+            localStorage.removeItem('user:token');
+            localStorage.removeItem('userdata');
+            window.location.href = '/user/login'; // or use navigate()
+        }
+    }
 
     const handleLogout = () => {
         localStorage.removeItem('user:token')
@@ -84,7 +95,7 @@ const HomeSIdeBar = () => {
         {isMobile && (<>
             {!shouldHideTopNav && (
                 <section className='w-full h-[7vh] bg-black border-b fixed z-50 top-0 left-0 right-0 flex items-center px-2'>
-                  
+
                     <div className='flex justify-center items-center w-full'>
                         <img onClick={() => navigate('/')} className='w-40' src="/instatext.svg" alt="" />
                     </div>
