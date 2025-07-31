@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 const HomeSIdeBar = lazy(() => import('../../components/HomeSIdeBar'));
 const SingleActiveVideo = lazy(() => import('../../components/SingleActiveVideo'));
-import { HeartIcon, EllipsisHorizontalIcon, ChatBubbleOvalLeftIcon, BookmarkIcon } from '@heroicons/react/24/outline';
-
+import { HeartIcon, EllipsisHorizontalIcon, ChatBubbleOvalLeftIcon } from '@heroicons/react/24/outline';
+import { BookmarkIcon as OutlineBookmark } from '@heroicons/react/24/outline';
+import { BookmarkIcon as SolidBookmark } from '@heroicons/react/24/solid';
 
 const Home = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [bookmarked, setBookmarked] = useState(false);
   const navigate = useNavigate()
   const port = import.meta.env.VITE_API_BASE_URL
   const [data, setData] = useState([])
@@ -95,10 +97,37 @@ const Home = () => {
     return () => window.removeEventListener('resize', checkIsMobile);
   }, []);
 
+  const handleBookmark = async (item) => {
+    try {
+      const token = localStorage.getItem('user:token')
+      const response = await fetch(`${port}/api/saved`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` // optional
+        },
+        body: JSON.stringify({
+          image: item.image,
+          mediaType: item.mediaType,
+          user: item.user,
+          likes: item.likes
+        })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setBookmarked(true); // ✅ icon changes here
+      } else {
+        alert(data.message);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (<>
     <div className={`${isMobile ? '' : 'flex items-center justify-center w-screen h-screen'} bg-black text-white `}>
-     
-        <HomeSIdeBar />
+
+      <HomeSIdeBar />
 
       <div className={`  flex ${isMobile ? 'w-full mt-[5vh] h-[93vh]' : 'border-l border-white w-[80%] h-screen'}`}>
         <div className={`${isMobile ? 'w-full ' : 'w-[60%]'} p-4 overflow-y-scroll scrollbar-hide`}>
@@ -154,7 +183,15 @@ const Home = () => {
 
                       <span className='w-7'><ChatBubbleOvalLeftIcon className='cursor-pointer' /></span>
                     </div>
-                    <span className='w-7'><BookmarkIcon className='cursor-pointer' /></span>
+
+                    <span onClick={() => { handleBookmark(item) }}>
+                      {bookmarked ? (
+                        <SolidBookmark className="w-6 h-6 text-blue-600" />
+                      ) : (
+                        <OutlineBookmark className="w-6 h-6" />
+                      )}
+                    </span>
+
                   </div>
                   <div className="px-4 pb-2 text-sm">
                     <span className="font-semibold">aamir</span> Loved this place! 🔥🔥

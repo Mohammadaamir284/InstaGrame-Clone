@@ -1,6 +1,7 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import HomeSIdeBar from '../../components/HomeSIdeBar'
+import Saved from '../../components/Saved';
 
 
 const Gallery = lazy(() => import('../../components/Gallery'));
@@ -166,7 +167,7 @@ const Profile = () => {
                 <p className={`cursor-pointer pt-2 ${visible === 'C' ? 'text-white border-t-2' : 'opacity-60'} `} onClick={() => setVisible('C')}>Saved</p>
               }
             </section>
-            {visible === 'A' && <main className={`${imageClicked ? ' absolute top-0 left-0 w-full h-full' : ' mb-7'} `} >
+            {visible === 'A' && <main className={`${imageClicked ? ' absolute top-0 left-0 w-full h-full ' : ' mb-7 '} `} >
               <Suspense fallback={<div className="text-white text-center p-10">Loading form...</div>}>
                 <Gallery owner={username} setImageClicked={setImageClicked} />
               </Suspense>
@@ -178,18 +179,9 @@ const Profile = () => {
               </Suspense>
             </main>}
             {visible === 'C' && <main className=' w-[70vw]  flex flex-wrap items-center pl-1.5 gap-1 mb-7'>
-              <div><img className="w-[210px] h-[210px] object-cover" src="/post.jpeg" alt="" /></div>
-              <div><img className="w-[210px] h-[210px] object-cover" src="/titan.jpg" alt="" /></div>
-              <div><img className="w-[210px] h-[210px] object-cover" src="/amir.png" alt="" /></div>
-              <div><img className="w-[210px] h-[210px] object-cover" src="/post.jpeg" alt="" /></div>
-              <div><img className="w-[210px] h-[210px] object-cover" src="/titan.jpg" alt="" /></div>
-              <div><img className="w-[210px] h-[210px] object-cover" src="/amir.png" alt="" /></div>
-              <div><img className="w-[210px] h-[210px] object-cover" src="/post.jpeg" alt="" /></div>
-              <div><img className="w-[210px] h-[210px] object-cover" src="/titan.jpg" alt="" /></div>
-              <div><img className="w-[210px] h-[210px] object-cover" src="/amir.png" alt="" /></div>
-              <div><img className="w-[210px] h-[210px] object-cover" src="/post.jpeg" alt="" /></div>
-              <div><img className="w-[210px] h-[210px] object-cover" src="/titan.jpg" alt="" /></div>
-              <div><img className="w-[210px] h-[210px] object-cover" src="/amir.png" alt="" /></div>
+             <Suspense fallback={<div className="text-white text-center p-10">Loading form...</div>}>
+                <Saved owner={username} setImageClicked={setImageClicked} />
+              </Suspense>
             </main>}
           </main>
 

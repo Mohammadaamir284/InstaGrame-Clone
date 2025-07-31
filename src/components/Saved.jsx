@@ -1,26 +1,28 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from 'react'
 import { motion } from 'framer-motion';
-import { ChevronLeftIcon, ChevronRightIcon, HeartIcon, ChatBubbleOvalLeftIcon, BookmarkIcon, ArrowLeftIcon} from '@heroicons/react/24/outline';
-import { } from '@heroicons/react/24/outline';
-export default function Gallery({ setImageClicked, owner }) {
+import { ChevronLeftIcon, ChevronRightIcon, HeartIcon, ChatBubbleOvalLeftIcon, BookmarkIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
+
+const SingleActiveVideo = lazy(() => import('../components/SingleActiveVideo'));
+
+export default function Saved({ setImageClicked, owner }) {
     const [PostImage, setPostImage] = useState([])
     const [userDetail, setuserDetail] = useState({})
     const [isMobile, setIsMobile] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(null);
     const port = import.meta.env.VITE_API_BASE_URL
-    const imagePosts = PostImage.filter(item => item.mediaType === "image");
+
     const handleImageClick = (index) => {
         setCurrentIndex(index);
         setImageClicked(true);
     };
     const goPrevious = () => {
         setCurrentIndex((prev) =>
-            prev === 0 ? imagePosts.length - 1 : prev - 1
+            prev === 0 ? PostImage.length - 1 : prev - 1
         );
     };
     const goNext = () => {
         setCurrentIndex((prev) =>
-            prev === imagePosts.length - 1 ? 0 : prev + 1
+            prev === PostImage.length - 1 ? 0 : prev + 1
         );
     };
     const exitViewer = () => {
@@ -30,7 +32,7 @@ export default function Gallery({ setImageClicked, owner }) {
     useEffect(() => {
         const getPost = async () => {
             const token = localStorage.getItem('user:token')
-            const response = await fetch(`${port}/api/post/${owner}`, {
+            const response = await fetch(`${port}/api/saved/${owner}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',   // ✅ सही
@@ -114,7 +116,6 @@ export default function Gallery({ setImageClicked, owner }) {
         <main className={`${isMobile ? '' : 'mt-5'} relative flex flex-col items-center`} >
             {!isMobile && currentIndex !== null && (
                 // Grid view
-
                 // Single image viewer with left/right controls
                 <div className=" flex items-center justify-center w-full">
                     {/* Left Button */}
@@ -124,17 +125,24 @@ export default function Gallery({ setImageClicked, owner }) {
                     >
                         <ChevronLeftIcon className="w-6 h-6" />
                     </button>
-
                     {/* Main Image */}
                     <div className={`${isMobile ? 'flex flex-col' : 'flex'}  shadow-lg z-50`}>
-                        <img
-                            src={imagePosts[currentIndex]?.image}
-                            alt="Main"
-                            className={`${isMobile ? 'object-contain' : 'w-[600px] h-[650px] object-cover rounded-l-xl'}  bg-gray-600  `}
-                        />
+
+                        {PostImage?.mediaType === 'image' ?
+                            <img
+                                className={`${isMobile ? 'object-contain' : 'w-[600px] h-[650px] object-cover rounded-l-xl'}  bg-gray-600  `}
+                                src={PostImage[currentIndex]?.image}
+                                alt="post"
+                            />
+                            :
+                            <Suspense fallback={<div className="text-white text-center p-10">Loading form...</div>}>
+                                <SingleActiveVideo
+                                    src={PostImage[currentIndex]?.image}
+                                />
+                            </Suspense>
+                        }
                         <div className={`${isMobile ? 'object-contain ' : 'w-[400px] h-[650px] rounded-r-xl bg-gray-900'}    `}></div>
                     </div>
-
                     {/* Right Button */}
                     <button
                         onClick={goNext}
@@ -142,15 +150,11 @@ export default function Gallery({ setImageClicked, owner }) {
                     >
                         <ChevronRightIcon className="w-6 h-6" />
                     </button>
-
                     {/* Close Button */}
-
                 </div>
             )}
-
             {isMobile && currentIndex !== null && (
                 <div
-
                     className="fixed inset-0 z-50 bg-black bg-opacity-80 backdrop-blur-sm overflow-y-auto"
                     onClick={exitViewer}>
                     <div
@@ -161,9 +165,8 @@ export default function Gallery({ setImageClicked, owner }) {
                             <ArrowLeftIcon onClick={exitViewer} className="w-6 h-6" />
                             <div className="text-center w-full font-semibold"> Post</div>
                         </div>
-
                         {/* SCROLLABLE ALL IMAGES */}
-                        {imagePosts.map((item, index) => {
+                        {PostImage.map((item, index) => {
                             const currentUser = JSON.parse(localStorage.getItem('userdata'))
                             const isAlreadyLikes = item.likes.length > 0 && item.likes.includes(currentUser?._id)
                             return (
@@ -181,14 +184,21 @@ export default function Gallery({ setImageClicked, owner }) {
                                             <span className="text-sm font-semibold">{userDetail.username}</span>
                                         </div>
                                     </div>
-
                                     {/* Image */}
-                                    <img
-                                        src={item.image}
-                                        alt={`image-${index}`}
-                                        className="w-full object-contain border-y"
-                                    />
+                                    {item?.mediaType === 'image' ?
+                                        <img
+                                            className="w-full h-[400px] object-contain bg-black"
+                                            src={item?.image}
+                                            alt="post"
+                                        />
+                                        :
+                                        <Suspense fallback={<div className="text-white text-center p-10">Loading form...</div>}>
+                                            <SingleActiveVideo
+                                                src={item?.image}
+                                            />
+                                        </Suspense>
 
+                                    }
                                     {/* Footer - Likes & Icons */}
                                     <div className="h-[10vh] p-4">
                                         <div className="flex justify-between py-2 text-xl">
@@ -226,14 +236,12 @@ export default function Gallery({ setImageClicked, owner }) {
                                 </div>
                             );
                         })}
-
                     </div>
                 </div>
             )}
             {currentIndex === null && (
-             
                 <div className={` ${isMobile ? '' : 'w-[70vw]'} flex flex-wrap items-center justify-center-safe gap-1 `}>
-                    {imagePosts.map((item, index) => (
+                    {PostImage.map((item, index) => (
                         <div key={index} onClick={() => handleImageClick(index)}>
                             <img
                                 className={`${isMobile ? 'w-[126px] h-[170px]' : 'w-[296px] h-[350px]'} object-cover cursor-pointer`}
@@ -243,18 +251,10 @@ export default function Gallery({ setImageClicked, owner }) {
                         </div>
                     ))}
                 </div>
-              
             )}
-            {imagePosts[currentIndex] &&
+            {PostImage[currentIndex] &&
                 <div className="absolute top-0 left-0 w-full h-full backdrop-blur-sm z-30" onClick={exitViewer}></div>
             }
         </main>
-        {/* :
-
-            <div>No Post</div>
-
-        } */}
-
-
     </>);
 }
