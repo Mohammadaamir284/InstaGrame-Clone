@@ -109,10 +109,7 @@ export default function Saved({ setImageClicked, owner }) {
             console.log(error)
         }
     }
-
     return (<>
-
-
         <main className={`${isMobile ? '' : 'mt-5'} relative flex flex-col items-center`} >
             {!isMobile && currentIndex !== null && (
                 // Grid view

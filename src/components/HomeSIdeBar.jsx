@@ -34,16 +34,7 @@ const HomeSIdeBar = () => {
         navigate(`/profile/${currentUser.username}?tab=saved`);
     };
 
-    const token = localStorage.getItem('user:token');
-    if (token) {
-        const decoded = JSON.parse(atob(token.split('.')[1]));
-        const currentTime = Date.now() / 1000;
-        if (decoded.exp < currentTime) {
-            localStorage.removeItem('user:token');
-            localStorage.removeItem('userdata');
-            window.location.href = '/user/login'; // or use navigate()
-        }
-    }
+    
 
     const handleLogout = () => {
         localStorage.removeItem('user:token')

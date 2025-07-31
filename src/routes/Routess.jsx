@@ -1,5 +1,5 @@
-import React, { lazy, Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import React, { lazy, Suspense, useEffect } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 // Lazy imports
 const Home = lazy(() => import('../modules/Home/Home'));
@@ -8,8 +8,6 @@ const Home2 = lazy(() => import('../modules/Home/Home2'));
 const Auths = lazy(() => import('../modules/Authrorization'));
 const Messages = lazy(() => import('../modules/Home/Messages'));
 const Profile = lazy(() => import('../modules/Home/Profile'));
-// const Post = lazy(() => import('../modules/Create/Post'));
-
 
 const PrivateRoute = ({ children }) => {
   const isUserlogin = window.localStorage.getItem('user:token') !== null
@@ -25,8 +23,8 @@ const PrivateRoute = ({ children }) => {
   }
 }
 
-
 const Routess = () => {
+  const navigate = useNavigate();
   const link = [
     { id: 1, path: '/', component: <Home /> },
     { id: 2, path: '/search', component: <Home1 /> },
@@ -37,6 +35,26 @@ const Routess = () => {
     { id: 7, path: '/profile/:username', component: <Profile /> },
     // { id: 8, path: '/create-post', component: <Post/> },
   ];
+
+  useEffect(() => {
+    const token = localStorage.getItem('user:token');
+    if (token) {
+      try {
+        const decoded = JSON.parse(atob(token.split('.')[1]));
+        const currentTime = Date.now() / 1000;
+        if (decoded.exp < currentTime) {
+          localStorage.removeItem('user:token');
+          localStorage.removeItem('userdata');
+          navigate('/user/login');
+        }
+      } catch (error) {
+        console.error("Invalid token", error);
+        localStorage.removeItem('user:token');
+        localStorage.removeItem('userdata');
+        navigate('/user/login');
+      }
+    }
+  }, [navigate]);
 
   return (
     <Suspense fallback={<div className="flex flex-col justify-center items-center space-y-2 bg-black h-[100vh]">
